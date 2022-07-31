@@ -37,7 +37,8 @@ const askTasks = async () => {
         { name: "Install Nginx", value: "nginx" },
         { name: "Install MongoDB", value: "mongo" },
         { name: "Install Certbot 'for https with nginx' ", value: "certbot" },
-        { name: "Nginx Website Config (Nodejs,React,..)", value: "config" }
+        { name: "Create Nginx Website Config (Nodejs,React,..)", value: "config" },
+        { name: "HTTPS on website on already configured nginx config", value: "letsencrypt" }
       ]
     }
   ];
@@ -146,6 +147,24 @@ const askConfigReact = async () => {
   ];
   return inquirer.prompt(questions);
 }
+const askEmail = async () => {
+  const questions = [
+    {
+      type: "input",
+      name: "EMAIL",
+      message: "What is your email address?",
+    }];
+  return inquirer.prompt(questions);
+}
+const askDomain = async () => {
+  const questions = [
+    {
+      type: "input",
+      name: "DOMAIN",
+      message: "What is the domain of the website? ex: c64.ae, backend.c64.ae",
+    }];
+  return inquirer.prompt(questions);
+}
 // const createFile = (filename, extension) => {
 //   const filePath = `${process.cwd()}/${filename}.${extension}`
 //   shell.touch(filePath);
@@ -228,9 +247,15 @@ const run = async () => {
     // shell.sed('-i', '{{PORT}}', PORT, filePath);
     const { CERTBOT } = await askCertbot();
     if (CERTBOT === "yes") {
-      await addCertificate(domain);
+      const { EMAIL } = await askEmail();
+      await addCertificate(domain, EMAIL);
     }
     success(filePath);
+  }
+  if (TASK === "letsencrypt") {
+    const { DOMAIN } = await askDomain();
+    const { EMAIL } = await askEmail();
+    await addCertificate(DOMAIN, EMAIL);
   }
 
   // show success message
