@@ -228,7 +228,15 @@ const run = async () => {
       const { DOMAIN, ROOT } = await askConfigReact();
       domain = DOMAIN;
       fileContent = `server {
+
+        root ${ROOT};
+        index index.html index.htm index.nginx-debian.html;
+
         server_name ${DOMAIN};
+        location / {
+    try_files $uri /index.html;
+        }
+    listen 80;
       }`;
       filePath = `/etc/nginx/sites-enabled/${DOMAIN}`;
     }
