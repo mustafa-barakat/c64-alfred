@@ -4,7 +4,7 @@ import inquirer from "inquirer";
 import chalk from "chalk";
 import figlet from "figlet";
 import shell from "shelljs";
-import { exec } from "child_process";
+import { exec, execSync } from "child_process";
 function isCurrentUserRoot() {
   return process.getuid() == 0; // UID 0 is always root
 }
@@ -33,7 +33,6 @@ const askTasks = async () => {
       name: "TASK",
       message: "What do you want to do?",
       choices: [
-        { name: "Create a new file", value: "create" },
         { name: "Install Nginx", value: "nginx" },
         { name: "Install MongoDB", value: "mongo" },
         { name: "Install Certbot 'for https with nginx' ", value: "certbot" },
@@ -104,25 +103,6 @@ const askCertbot = async () => {
   return inquirer.prompt(questions);
 };
 
-const askQuestions = () => {
-  const questions = [
-    {
-      name: "FILENAME",
-      type: "input",
-      message: "What is the name of the file without extension?"
-    },
-    {
-      type: "list",
-      name: "EXTENSION",
-      message: "What is the file extension?",
-      choices: [".rb", ".js", ".php", ".css"],
-      filter: function (val) {
-        return val.split(".")[1];
-      }
-    }
-  ];
-  return inquirer.prompt(questions);
-};
 const askConfigReact = async () => {
   const questions = [
     {
@@ -189,11 +169,6 @@ const run = async () => {
   // ask questions
   const answers = await askTasks();
   const { TASK } = answers;
-  if (TASK === "create") {
-    // const { FILENAME, EXTENSION } = await askQuestions();
-    // const filepath = createFile(FILENAME, EXTENSION);
-    // success(filepath);
-  }
   if (TASK === "nginx") {
     await installNginx();
   }
@@ -244,12 +219,7 @@ const run = async () => {
 
     shell.touch(filePath);
     shell.ShellString(fileContent).to(filePath);
-    exec(`sudo service nginx reload`, (error, stdout, stderr) => {
-      if (error) {
-        return;
-      }
-    }
-    );
+    execSync(`sudo service nginx reload`);
     // shell.touch(filePath);
     // shell.sed('-i', '{{DOMAIN}}', DOMAIN, filePath);
     // shell.sed('-i', '{{PORT}}', PORT, filePath);
@@ -271,51 +241,19 @@ const run = async () => {
 };
 const installNginx = async () => {
 
-  exec("sudo apt-get install nginx -y ", (error, stdout, stderr) => {
-    if (error) {
-      return;
-    }
-    if (stderr) {
-      return;
-    }
-  });
+  execSync("sudo apt-get install nginx -y ");
 }
 const installMongoDB = async () => {
 
-  exec("sudo apt-get install nginx -y ", (error, stdout, stderr) => {
-    if (error) {
-      return;
-    }
-    if (stderr) {
-      return;
-    }
-  });
+  execSync("sudo apt-get install nginx -y ");
 }
 const installCertBot = async () => {
   // sudo apt install certbot python3-certbot-nginx
-  exec("sudo apt install certbot python3-certbot-nginx -y ", (error, stdout, stderr) => {
-    if (error) {
-      return;
-    }
-    if (stderr) {
-      return;
-    }
-  }
-  );
+  execSync("sudo apt install certbot python3-certbot-nginx -y ");
 }
 const addCertificate = async (domain, email) => {
   //certbot --nginx -d DOMAIN --agree-tos -m muebarakat@gmail.com
-  exec(`certbot --nginx -d ${domain} --agree-tos -m ${email}`, (error, stdout, stderr) => {
-    if (error) {
-      console.log(error);
-      return;
-    }
-    if (stderr) {
-      console.log(stderr);
-      return;
-    }
-  }
-  );
+  execSync(`certbot --nginx -d ${domain} --agree-tos -m ${email}`);
 }
 
 

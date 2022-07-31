@@ -1,6 +1,6 @@
 {
   "name": "c64-alfred",
-  "version": "0.0.36",
+  "version": "0.0.38",
   "description": "Server Manager for C64",
   "main": "index.js",
   "type": "module",
