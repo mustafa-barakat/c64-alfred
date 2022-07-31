@@ -1,0 +1,21 @@
+{
+  "name": "c64-alfred",
+  "version": "0.0.34",
+  "description": "Server Manager for C64",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "mustafa-barakat",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^5.0.1",
+    "figlet": "^1.5.2",
+    "inquirer": "^9.0.2",
+    "shelljs": "^0.8.5"
+  },
+  "bin": {
+    "c64-alfred": "index.js"
+  }
+}
